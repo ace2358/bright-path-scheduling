@@ -16,6 +16,6 @@ Historical CSV rows are imported as a record of what happened, including rule vi
 
 New and rescheduled lessons are checked against booked lessons using exclusive end times, so back-to-back lessons remain valid. Updates can exclude their current lesson ID. Cancelled and no-show lessons do not block scheduling.
 
-## Deferred next step
+## API integration
 
-Integrate conflict validation into the create and update API endpoints.
+The create and update endpoints resolve referenced tutors and students before validation. Conflicts return HTTP 409 with the conflict type, resource identity, and existing lesson ID; valid requests are persisted with their participants.

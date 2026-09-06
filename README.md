@@ -24,7 +24,7 @@ dotnet test BrightPathScheduling.sln --no-restore
 ## API surface
 
 - `GET /api/lessons` — lists lessons and their participants.
-- `POST /api/lessons` — endpoint scaffold for creating a validated lesson.
-- `PUT /api/lessons/{id}` — endpoint scaffold for rescheduling a validated lesson.
+- `POST /api/lessons` — creates a lesson after conflict validation.
+- `PUT /api/lessons/{id}` — updates or reschedules an existing lesson after conflict validation.
 
-The provided CSV exports are held in `data/` and are imported idempotently at startup. The conflict service validates proposed lessons against booked tutor, room, and student overlaps; API endpoint integration remains deferred.
+The provided CSV exports are held in `data/` and are imported idempotently at startup. Invalid new or rescheduled lessons return `409 Conflict` with structured tutor, room, and student conflict details.

@@ -1,6 +1,51 @@
 @BrightPath.Api_HostAddress = http://localhost:5178
 
-GET {{BrightPath.Api_HostAddress}}/weatherforecast/
+GET {{BrightPath.Api_HostAddress}}/api/lessons
 Accept: application/json
+
+###
+
+# Valid against the supplied seed data (student 1 is Le Minh Chau on a fresh database).
+POST {{BrightPath.Api_HostAddress}}/api/lessons
+Content-Type: application/json
+
+{
+	"tutorId": "T1",
+	"room": "R1",
+	"startAt": "2026-03-11T09:00:00",
+	"durationMinutes": 60,
+	"studentIds": [1],
+	"note": "API demonstration"
+}
+
+###
+
+# Conflicts with T1's seeded lesson on 2026-03-03 at 09:00.
+POST {{BrightPath.Api_HostAddress}}/api/lessons
+Content-Type: application/json
+
+{
+	"tutorId": "T1",
+	"room": "TEST-ROOM",
+	"startAt": "2026-03-03T09:30:00",
+	"durationMinutes": 30,
+	"studentIds": [6],
+	"note": "Expected to return 409"
+}
+
+###
+
+# Updates seeded lesson 1 while excluding that lesson from self-conflict checks.
+PUT {{BrightPath.Api_HostAddress}}/api/lessons/1
+Content-Type: application/json
+
+{
+	"tutorId": "T1",
+	"room": "R1",
+	"startAt": "2026-03-03T09:00:00",
+	"durationMinutes": 60,
+	"studentIds": [1],
+	"note": "Updated through API"
+}
 
 ###

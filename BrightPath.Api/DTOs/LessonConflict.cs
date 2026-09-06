@@ -12,3 +12,5 @@ public sealed record LessonConflict(
     string ResourceId,
     string ResourceName,
     int ConflictingLessonId);
+
+public sealed record LessonConflictResponse(IReadOnlyList<LessonConflict> Conflicts);
