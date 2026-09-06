@@ -12,6 +12,10 @@ Lesson-aware scheduling and conflict detection is prioritised because a bad book
 
 Historical CSV rows are imported as a record of what happened, including rule violations. Only rows explicitly marked `exam pair - half price` and matching all lesson details are grouped into one shared lesson. New and rescheduled lessons will be validated separately.
 
+## Conflict validation
+
+New and rescheduled lessons are checked against booked lessons using exclusive end times, so back-to-back lessons remain valid. Updates can exclude their current lesson ID. Cancelled and no-show lessons do not block scheduling.
+
 ## Deferred next step
 
-Implement conflict rules for new or updated lessons.
+Integrate conflict validation into the create and update API endpoints.
