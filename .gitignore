@@ -1,0 +1,32 @@
+# .NET build output
+[Bb]in/
+[Oo]bj/
+
+# Test output
+TestResults/
+*.trx
+
+# Local SQLite runtime databases
+*.db
+*.db-shm
+*.db-wal
+
+# Visual Studio and user-specific files
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*.rsuser
+
+# VS Code workspace settings
+.vscode/
+
+# Local workspace artifacts
+/outputs/
+/work/
+
+# Operating-system files
+.DS_Store
+Thumbs.db
+Desktop.ini

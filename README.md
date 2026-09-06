@@ -1,0 +1,30 @@
+# Bright Path Scheduling
+
+Small ASP.NET Core API for the Bright Path Learning Centre scheduling assessment.
+
+## Prerequisites
+
+- .NET 8 SDK
+
+## Run
+
+```powershell
+dotnet restore BrightPathScheduling.sln --configfile NuGet.Config
+dotnet run --project BrightPath.Api
+```
+
+Swagger is available at the URL printed by the API (normally `/swagger`). SQLite is created automatically as `BrightPath.Api/brightpath.db`.
+
+## Tests
+
+```powershell
+dotnet test BrightPathScheduling.sln --no-restore
+```
+
+## API surface
+
+- `GET /api/lessons` — lists lessons and their participants.
+- `POST /api/lessons` — endpoint scaffold for creating a validated lesson.
+- `PUT /api/lessons/{id}` — endpoint scaffold for rescheduling a validated lesson.
+
+The provided CSV exports are held in `data/`. Import and conflict-validation behaviour are deliberately the next implementation increment.

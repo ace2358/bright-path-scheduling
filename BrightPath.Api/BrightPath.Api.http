@@ -1,0 +1,6 @@
+@BrightPath.Api_HostAddress = http://localhost:5178
+
+GET {{BrightPath.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

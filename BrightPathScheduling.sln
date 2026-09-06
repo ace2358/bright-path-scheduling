@@ -1,0 +1,24 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BrightPath.Api", "BrightPath.Api\BrightPath.Api.csproj", "{BB34720B-A07D-419A-B3E3-D8C8EEB35C2B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BrightPath.Tests", "BrightPath.Tests\BrightPath.Tests.csproj", "{4BA09850-3D54-4334-AB38-C861C9C2360B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{BB34720B-A07D-419A-B3E3-D8C8EEB35C2B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BB34720B-A07D-419A-B3E3-D8C8EEB35C2B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BB34720B-A07D-419A-B3E3-D8C8EEB35C2B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BB34720B-A07D-419A-B3E3-D8C8EEB35C2B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4BA09850-3D54-4334-AB38-C861C9C2360B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4BA09850-3D54-4334-AB38-C861C9C2360B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4BA09850-3D54-4334-AB38-C861C9C2360B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4BA09850-3D54-4334-AB38-C861C9C2360B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

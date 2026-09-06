@@ -1,0 +1,17 @@
+# Decisions
+
+## Chosen feature
+
+Lesson-aware scheduling and conflict detection is prioritised because a bad booking immediately affects a student, tutor, room, and receptionist workflow.
+
+## Model
+
+`Lesson` is the scheduling unit. A lesson has one tutor and room, while `LessonParticipant` lets a lesson have one or more students. This represents an explicit shared exam lesson without confusing it with two conflicting lessons.
+
+## Historical data
+
+Historical CSV rows will be imported as a record of what happened, including rule violations. New and rescheduled lessons will be validated separately.
+
+## Deferred next step
+
+Implement the conservative importer (only merge rows explicitly marked `exam pair - half price`) and conflict rules for new or updated lessons.
