@@ -56,6 +56,23 @@ public sealed class LessonConflictServiceTests
     }
 
     [Fact]
+    public async Task Multiple_conflicts_are_returned_for_the_same_overlapping_lesson()
+    {
+        var data = await CreateTestDataAsync();
+        await using var db = data.Db;
+        var proposed = Proposed("T1", "R1", At(9, 30), 60, data.StudentA.Id);
+
+        var conflicts = await new LessonConflictService(db).ValidateAsync(proposed);
+
+        Assert.Equal(3, conflicts.Count);
+        Assert.Equal(
+            [LessonConflictType.Tutor, LessonConflictType.Room, LessonConflictType.Student],
+            conflicts.Select(conflict => conflict.Type));
+        Assert.All(conflicts, conflict =>
+            Assert.Equal(data.ExistingLesson.Id, conflict.ConflictingLessonId));
+    }
+
+    [Fact]
     public async Task Multiple_students_in_same_proposed_lesson_are_allowed()
     {
         var data = await CreateTestDataAsync();

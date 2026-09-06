@@ -23,7 +23,10 @@ dotnet test BrightPathScheduling.sln --no-restore
 
 ## API surface
 
-- `GET /api/lessons` — lists lessons and their participants.
+- `GET /api/tutors` — lists tutor IDs and names ordered by ID.
+- `GET /api/students` — lists student IDs and names ordered by ID.
+- `GET /api/lessons?page=1&pageSize=20` — lists lessons and participants using stable pagination. `page` must be at least 1; `pageSize` must be between 1 and 100.
+- `GET /api/lessons/{id}` — retrieves one lesson with its tutor and participants.
 - `POST /api/lessons` — creates a lesson after conflict validation.
 - `PUT /api/lessons/{id}` — updates or reschedules an existing lesson after conflict validation.
 

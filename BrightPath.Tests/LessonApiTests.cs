@@ -1,5 +1,6 @@
 using System.Net;
 using System.Net.Http.Json;
+using System.Text.Json;
 using BrightPath.Api.Data;
 using BrightPath.Api.DTOs;
 using BrightPath.Api.Models;
@@ -14,6 +15,132 @@ namespace BrightPath.Tests;
 
 public sealed class LessonApiTests
 {
+    [Fact]
+    public async Task Tutors_are_returned_in_id_order_with_only_id_and_name()
+    {
+        using var factory = new SchedulingApplicationFactory();
+        using var client = factory.CreateClient();
+
+        var response = await client.GetAsync("/api/tutors");
+
+        response.EnsureSuccessStatusCode();
+        var tutors = Assert.IsType<List<TutorResponse>>(
+            await response.Content.ReadFromJsonAsync<List<TutorResponse>>());
+        Assert.Equal(["T1", "T2", "T3"], tutors.Select(tutor => tutor.Id));
+
+        using var json = JsonDocument.Parse(await response.Content.ReadAsStringAsync());
+        Assert.All(json.RootElement.EnumerateArray(), tutor =>
+            Assert.Equal(["id", "name"], tutor.EnumerateObject().Select(property => property.Name)));
+    }
+
+    [Fact]
+    public async Task Students_are_returned_in_id_order_with_only_id_and_name()
+    {
+        using var factory = new SchedulingApplicationFactory();
+        using var client = factory.CreateClient();
+
+        var response = await client.GetAsync("/api/students");
+
+        response.EnsureSuccessStatusCode();
+        var students = Assert.IsType<List<StudentResponse>>(
+            await response.Content.ReadFromJsonAsync<List<StudentResponse>>());
+        Assert.Equal(students.OrderBy(student => student.Id).Select(student => student.Id),
+            students.Select(student => student.Id));
+        Assert.Equal(6, students.Count);
+
+        using var json = JsonDocument.Parse(await response.Content.ReadAsStringAsync());
+        Assert.All(json.RootElement.EnumerateArray(), student =>
+            Assert.Equal(["id", "name"], student.EnumerateObject().Select(property => property.Name)));
+    }
+
+    [Fact]
+    public async Task Lessons_are_paginated_with_defaults_and_stable_ordering()
+    {
+        using var factory = new SchedulingApplicationFactory();
+        using var client = factory.CreateClient();
+
+        var defaultPage = Assert.IsType<PagedResponse<LessonResponse>>(
+            await client.GetFromJsonAsync<PagedResponse<LessonResponse>>("/api/lessons"));
+        var secondPage = Assert.IsType<PagedResponse<LessonResponse>>(
+            await client.GetFromJsonAsync<PagedResponse<LessonResponse>>("/api/lessons?page=2&pageSize=5"));
+
+        Assert.Equal(1, defaultPage.Page);
+        Assert.Equal(20, defaultPage.PageSize);
+        Assert.Equal(33, defaultPage.TotalCount);
+        Assert.Equal(2, defaultPage.TotalPages);
+        Assert.Equal(20, defaultPage.Items.Count);
+
+        Assert.Equal(2, secondPage.Page);
+        Assert.Equal(5, secondPage.PageSize);
+        Assert.Equal(33, secondPage.TotalCount);
+        Assert.Equal(7, secondPage.TotalPages);
+        Assert.Equal(5, secondPage.Items.Count);
+        Assert.Equal(
+            secondPage.Items.OrderBy(lesson => lesson.StartAt).ThenBy(lesson => lesson.Id).Select(lesson => lesson.Id),
+            secondPage.Items.Select(lesson => lesson.Id));
+    }
+
+    [Fact]
+    public async Task Invalid_pagination_returns_bad_request()
+    {
+        using var factory = new SchedulingApplicationFactory();
+        using var client = factory.CreateClient();
+
+        foreach (var path in new[]
+                 {
+                     "/api/lessons?page=0",
+                     "/api/lessons?pageSize=0",
+                     "/api/lessons?pageSize=101"
+                 })
+        {
+            var response = await client.GetAsync(path);
+
+            Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+            var body = Assert.IsType<ValidationErrorResponse>(
+                await response.Content.ReadFromJsonAsync<ValidationErrorResponse>());
+            Assert.NotEmpty(body.Errors);
+        }
+    }
+
+    [Fact]
+    public async Task Getting_existing_lesson_by_id_returns_lesson_response()
+    {
+        using var factory = new SchedulingApplicationFactory();
+        using var client = factory.CreateClient();
+
+        int lessonId;
+        using (var scope = factory.Services.CreateScope())
+        {
+            var db = scope.ServiceProvider.GetRequiredService<SchedulingDbContext>();
+            lessonId = await db.Lessons
+                .Where(lesson => lesson.TutorId == "T1" && lesson.Room == "R1")
+                .OrderBy(lesson => lesson.Id)
+                .Select(lesson => lesson.Id)
+                .FirstAsync();
+        }
+
+        var response = await client.GetAsync($"/api/lessons/{lessonId}");
+
+        response.EnsureSuccessStatusCode();
+        var lesson = Assert.IsType<LessonResponse>(
+            await response.Content.ReadFromJsonAsync<LessonResponse>());
+        Assert.Equal(lessonId, lesson.Id);
+        Assert.Equal("T1", lesson.TutorId);
+        Assert.Equal("Ngoc Anh", lesson.TutorName);
+        Assert.NotEmpty(lesson.Students);
+    }
+
+    [Fact]
+    public async Task Getting_unknown_lesson_by_id_returns_not_found()
+    {
+        using var factory = new SchedulingApplicationFactory();
+        using var client = factory.CreateClient();
+
+        var response = await client.GetAsync("/api/lessons/999999");
+
+        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+    }
+
     [Fact]
     public async Task Creating_conflicting_lesson_returns_conflict_details()
     {
