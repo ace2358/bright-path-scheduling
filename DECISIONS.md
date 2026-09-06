@@ -10,8 +10,8 @@ Lesson-aware scheduling and conflict detection is prioritised because a bad book
 
 ## Historical data
 
-Historical CSV rows will be imported as a record of what happened, including rule violations. New and rescheduled lessons will be validated separately.
+Historical CSV rows are imported as a record of what happened, including rule violations. Only rows explicitly marked `exam pair - half price` and matching all lesson details are grouped into one shared lesson. New and rescheduled lessons will be validated separately.
 
 ## Deferred next step
 
-Implement the conservative importer (only merge rows explicitly marked `exam pair - half price`) and conflict rules for new or updated lessons.
+Implement conflict rules for new or updated lessons.

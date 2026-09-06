@@ -18,7 +18,8 @@ using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<SchedulingDbContext>();
     await db.Database.EnsureCreatedAsync();
-    await scope.ServiceProvider.GetRequiredService<SeedDataService>().SeedAsync();
+    var dataDirectory = Path.GetFullPath(Path.Combine(app.Environment.ContentRootPath, "..", "data"));
+    await scope.ServiceProvider.GetRequiredService<SeedDataService>().SeedAsync(dataDirectory);
 }
 
 app.UseSwagger();
